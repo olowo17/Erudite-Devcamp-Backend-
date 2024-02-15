@@ -5,10 +5,10 @@ const {
   getBootcamps,
   updateBootcamp,
   deleteBootcamp,
-  postBootcamp,
+  createBootcamp,
 } = require("../controllers/bootcamps");
 
-bootcampRouter.route("/").get(getBootcamps).post(postBootcamp);
+bootcampRouter.route("/").get(getBootcamps).post(createBootcamp);
 
 bootcampRouter
   .route("/:id")
