@@ -9,25 +9,31 @@ const {
   bootcampPhotoUpload,
 } = require("../controllers/bootcamps");
 
-const Bootcamp = require('../models/Bootcamp')
-const advancedResults = require('../middleware/advancedResults')
+const Bootcamp = require("../models/Bootcamp");
+const advancedResults = require("../middleware/advancedResults");
+
+const { protect, authorize } = require("../middleware/auth");
 
 //include other resource routers
 const courseRouter = require("./courses");
+
 //Re-route into other resource router
 //  @route GET/api/v1/bootcamps/:bootcampId/courses
 bootcampRouter.use("/:bootcampId/courses", courseRouter);
 
-bootcampRouter.route("/")
-.get(advancedResults(Bootcamp,'courses'),getBootcamps)
-.post(createBootcamp);
+bootcampRouter
+  .route("/")
+  .get(advancedResults(Bootcamp, "courses"), getBootcamps)
+  .post(protect, authorize("admin", "publisher"), createBootcamp);
 
 bootcampRouter
   .route("/:id")
   .get(getBootcampById)
-  .put(updateBootcamp)
-  .delete(deleteBootcamp);
+  .put(protect, authorize("admin", "publisher"), updateBootcamp)
+  .delete(protect, authorize("admin", "publisher"), deleteBootcamp);
 
-bootcampRouter.route("/:id/photo").put(bootcampPhotoUpload);
+bootcampRouter
+  .route("/:id/photo")
+  .put(protect, authorize("admin", "publisher"), bootcampPhotoUpload);
 
 module.exports = bootcampRouter;

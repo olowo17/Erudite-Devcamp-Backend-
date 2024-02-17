@@ -1,12 +1,14 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const colours = require("colors");
 const errorHandler = require("./middleware/error");
-const bootcamps = require("./routes/bootcamps");
-const courses = require("./routes/courses");
+const bootcampRouter = require("./routes/bootcamps");
+const authRouter = require("./routes/auth");
+const courseRouter = require("./routes/courses");
 const fileupload = require("express-fileupload");
 const path = require('path')
+const cookieParser = require("cookie-parser")
+const colors = require('colors')
 // load env variables
 dotenv.config({ path: "./config/config.env" });
 
@@ -18,6 +20,8 @@ const morgan = require("morgan");
 const app = express();
 
 app.use(express.json());
+
+app.use(cookieParser())
 
 // Dev loggin middleware
 if (process.env.NODE_ENV === "development") {
@@ -31,8 +35,9 @@ app.use(fileupload());
 app.use(express.static(path.join(__dirname,`public`)));
 
 // Mount Routers
-app.use("/api/v1/bootcamps", bootcamps);
-app.use("/api/v1/courses", courses);
+app.use("/api/v1/bootcamps", bootcampRouter);
+app.use("/api/v1/courses", courseRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.use(errorHandler);
 
