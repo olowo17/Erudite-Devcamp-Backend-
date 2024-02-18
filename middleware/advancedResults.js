@@ -25,6 +25,7 @@ const advancedResults = (model,populate)=>async (req,res,next)=>{
   }
 
   //sort fields
+  // first remove the commas in the array and join them using a space
   if (req.query.sort) {
     const sortBy = req.query.sort.split(",").join(" ");
     console.log(sortBy);

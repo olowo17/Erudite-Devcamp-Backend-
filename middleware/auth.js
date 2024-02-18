@@ -28,6 +28,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    // Find the loggedIn user who now has a token and save it into a variable called user in the request object
+    // so routes that are using the protected middleware can have access to this
+    // This actually originated from the User scehma. a method was attached to it
     req.user = await User.findById(decoded.id);
 
     next();
@@ -39,6 +42,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 // Grant access to specific roles
 exports.authorize = (...roles) => {
   return (req, res, next) => {
+    // That is why we have access to the role here
     if (!roles.includes(req.user.role)) {
       return next(
         new ErrorResponse(
