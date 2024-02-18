@@ -5,6 +5,7 @@ const errorHandler = require("./middleware/error");
 const bootcampRouter = require("./routes/bootcamps");
 const authRouter = require("./routes/auth");
 const courseRouter = require("./routes/courses");
+const reviewRouter = require("./routes/reviews");
 const adminRouter = require("./routes/admin");
 const fileupload = require("express-fileupload");
 const path = require("path");
@@ -40,6 +41,7 @@ app.use("/api/v1/bootcamps", bootcampRouter);
 app.use("/api/v1/courses", courseRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 app.use(errorHandler);
 
