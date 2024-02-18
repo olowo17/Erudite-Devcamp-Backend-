@@ -10,7 +10,12 @@ const adminRouter = require("./routes/admin");
 const fileupload = require("express-fileupload");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const hpp = require("hpp");
+const rateLimit = require("express-rate-limit");
 const colors = require("colors");
+const cors = require("cors");
 // load env variables
 dotenv.config({ path: "./config/config.env" });
 
@@ -25,16 +30,34 @@ app.use(express.json());
 
 app.use(cookieParser());
 
+app.use(helmet());
+
+
+
+app.use(cors());
+
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 100,
+});
+
+app.use(limiter);
+
+app.use(hpp());
+
 // Dev loggin middleware
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+
+app.use(mongoSanitize());
 
 //File upload
 app.use(fileupload());
 
 // Set static folder
 app.use(express.static(path.join(__dirname, `public`)));
+
 
 // Mount Routers
 app.use("/api/v1/bootcamps", bootcampRouter);
